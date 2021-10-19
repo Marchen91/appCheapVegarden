@@ -71,7 +71,9 @@ class ListaView extends StatelessWidget {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.shifting,
           currentIndex: 0,
+          selectedItemColor: Colors.white,
           backgroundColor: Color.fromRGBO(142, 215, 206, 10),
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

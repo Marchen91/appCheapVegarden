@@ -183,16 +183,28 @@ class EditView extends StatelessWidget {
           backgroundColor: Color.fromRGBO(142, 215, 206, 10),
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
+              activeIcon: Icon(
+                Icons.home,
+                color: Colors.white,
+              ),
               icon: Icon(Icons.home),
               label: 'Home',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
+              activeIcon: Icon(
+                Icons.home,
+                color: Colors.white,
+              ),
               icon: Icon(Icons.search),
               label: 'Search',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
+              activeIcon: Icon(
+                Icons.camera,
+                color: Colors.white,
+              ),
               icon: Icon(Icons.camera),
               label: 'Camera',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
