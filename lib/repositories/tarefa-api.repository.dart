@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'dart:async';
 
 class TarefaApiRepository {
-  final String url = 'https://fatec-cheapvergarden-api.herokuapp.com/tarefa';
+  final String url =
+      'https://fatec-cheapvergarden-api.herokuapp.com/cheapvegarden';
 
   // atributo
   List<Tarefa> tarefas = [];

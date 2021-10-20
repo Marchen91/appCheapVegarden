@@ -4,6 +4,7 @@ import 'package:tarefas_app/views/android/create.view.dart';
 import 'package:tarefas_app/views/android/edit.view.dart';
 import 'package:tarefas_app/views/android/lista.view.dart';
 import 'package:provider/provider.dart';
+import 'package:tarefas_app/views/android/temphumi.view.dart';
 
 class AndroidApp extends StatelessWidget {
   @override
@@ -14,7 +15,7 @@ class AndroidApp extends StatelessWidget {
         // home: ListaView(),
         debugShowCheckedModeBanner: false,
         routes: {
-          '/': (context) => ListaView(),
+          '/': (context) => TempHumid(),
           '/create': (context) => CreateView(),
           '/edit': (context) => EditView(),
         },
