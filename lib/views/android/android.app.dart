@@ -4,6 +4,7 @@ import 'package:tarefas_app/views/android/create.view.dart';
 import 'package:tarefas_app/views/android/edit.view.dart';
 import 'package:tarefas_app/views/android/lista.view.dart';
 import 'package:provider/provider.dart';
+import 'package:tarefas_app/views/android/login.view.dart';
 import 'package:tarefas_app/views/android/temphumi.view.dart';
 
 class AndroidApp extends StatelessWidget {
@@ -18,6 +19,8 @@ class AndroidApp extends StatelessWidget {
           '/': (context) => TempHumid(),
           '/create': (context) => CreateView(),
           '/edit': (context) => EditView(),
+          '/list': (context) => ListaView(),
+          '/login': (context) => Login(),
         },
         initialRoute: '/',
       ),

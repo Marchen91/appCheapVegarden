@@ -1,8 +1,10 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
 import 'package:flutter/services.dart';
+import 'package:tarefas_app/views/android/bottow.view.dart';
 
 class EditView extends StatelessWidget {
   // atributos da classe:
@@ -14,6 +16,8 @@ class EditView extends StatelessWidget {
 
   var n;
   var n2;
+
+  int _currentIndex = 2;
 //final Map<Tarefa, Tarefa> _formData = {};
 
   /*void _loadFormData(Tarefa tarefa){
@@ -78,138 +82,152 @@ class EditView extends StatelessWidget {
           )
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              Text(
-                "Editar Cultura",
-                style: TextStyle(
-                    color: Colors.blueGrey,
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Homegarden'),
-              ),
-              SizedBox(height: 35),
-              TextFormField(
-                initialValue: tarefaArg.texto,
-                decoration: InputDecoration(
-                    labelText: "Cultura",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.agriculture_outlined)),
-                onSaved: (value) => this.descricao = value,
-                validator: (value) {
-                  if (value!.length < 3) {
-                    return "Campo obrigatório";
-                  }
-                  return null;
-                },
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                initialValue: tarefaArgMin,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    labelText: "Umidade Mínima ",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.water_damage),
-                    suffix: Text('%')),
-                onSaved: (valor) => this.minimo = valor,
-                validator: (valor) {
-                  //var valorMin;
-                  /*if (n == null) {
-                    valorMin = "0";
-                    n = 0;
-                  }*/
-                  n = num.tryParse(valor!);
-                  if (valor.length == 0) {
-                    return "Campo obrigatório";
-                  }
-                  if (num.tryParse(valor)! > 100) {
-                    return "Umidade máxima de 100%.";
-                  }
-                  if (num.tryParse(valor)! < 0) {
-                    return "Umidade mínima de 0%.";
-                  }
-                  /*   if (n < 0) {
-                    return "Valor não pode ser negativo.";
-                  }
-                  if (n > 100) {
-                    return "Valor não pode ser maior que 100 %.";
-                  }
-*/
-                  return null;
-                },
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                //enabled: false,
-                initialValue: tarefaArgMax,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    labelText: "Umidade Máxima ",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.water_damage_outlined),
-                    suffix: Text('%')),
-                onSaved: (valormax) => this.maximo = valormax,
-                validator: (valormax) {
-                  if (valormax!.length == 0) {
-                    return "Campo obrigatório";
-                  }
-                  n2 = num.tryParse(valormax);
-                  if (n == null) {
-                    n = tarefaArg.min;
-
-                    return "${Validation(n, n2)}";
-                  } else if (Validation(n, n2) == null) {
+      body: Container(
+        color: Colors.white,
+        child: Form(
+          key: _formKey,
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  "Editar Cultura",
+                  style: TextStyle(
+                      color: Colors.blueGrey,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Homegarden'),
+                ),
+                SizedBox(height: 35),
+                TextFormField(
+                  initialValue: tarefaArg.texto,
+                  decoration: InputDecoration(
+                      labelText: "Cultura",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.agriculture_outlined)),
+                  onSaved: (value) => this.descricao = value,
+                  validator: (value) {
+                    if (value!.length < 3) {
+                      return "Campo obrigatório";
+                    }
                     return null;
-                  } else {
-                    return "${Validation(n, n2)}";
-                  }
-                },
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-              )
-            ],
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  initialValue: tarefaArgMin,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      labelText: "Umidade Mínima ",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.water_damage),
+                      suffix: Text('%')),
+                  onSaved: (valor) => this.minimo = valor,
+                  validator: (valor) {
+                    //var valorMin;
+                    /*if (n == null) {
+                      valorMin = "0";
+                      n = 0;
+                    }*/
+                    n = num.tryParse(valor!);
+                    if (valor.length == 0) {
+                      return "Campo obrigatório";
+                    }
+                    if (num.tryParse(valor)! > 100) {
+                      return "Umidade máxima de 100%.";
+                    }
+                    if (num.tryParse(valor)! < 0) {
+                      return "Umidade mínima de 0%.";
+                    }
+                    /*   if (n < 0) {
+                      return "Valor não pode ser negativo.";
+                    }
+                    if (n > 100) {
+                      return "Valor não pode ser maior que 100 %.";
+                    }
+*/
+                    return null;
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  //enabled: false,
+                  initialValue: tarefaArgMax,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      labelText: "Umidade Máxima ",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.water_damage_outlined),
+                      suffix: Text('%')),
+                  onSaved: (valormax) => this.maximo = valormax,
+                  validator: (valormax) {
+                    if (valormax!.length == 0) {
+                      return "Campo obrigatório";
+                    }
+                    n2 = num.tryParse(valormax);
+                    if (n == null) {
+                      n = tarefaArg.min;
+
+                      return "${Validation(n, n2)}";
+                    } else if (Validation(n, n2) == null) {
+                      return null;
+                    } else {
+                      return "${Validation(n, n2)}";
+                    }
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                )
+              ],
+            ),
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 1,
+      bottomNavigationBar: CurvedNavigationBar(
+        index: _currentIndex,
+        color: Color.fromRGBO(142, 215, 206, 10),
+        backgroundColor: Colors.white,
+        items: <Widget>[
+          Icon(Icons.thermostat),
+          Icon(Icons.auto_graph),
+          Icon(Icons.eco),
+        ],
+        onTap: ((index) {
+          print(index);
+          if (index == 0) {
+            Navigator.of(context).pushNamed('/');
+          }
+          if (index == 1) {
+            Navigator.of(context).pushNamed('/list');
+          } else if (index == 2) {
+            Navigator.of(context).pushNamed('/create');
+          }
+        }),
+      ),
+
+      /*  BottomNavigationBar(
+          currentIndex: _currentIndex,
+          selectedItemColor: Colors.white,
           backgroundColor: Color.fromRGBO(142, 215, 206, 10),
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              activeIcon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.thermostat),
               label: 'Home',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
-              activeIcon: Icon(
-                Icons.home,
-                color: Colors.white,
-              ),
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.auto_graph),
               label: 'Search',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
-              activeIcon: Icon(
-                Icons.camera,
-                color: Colors.white,
-              ),
-              icon: Icon(Icons.camera),
+              icon: Icon(Icons.eco),
               label: 'Camera',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
-          ]),
+          ]),*/
     );
   }
 }
