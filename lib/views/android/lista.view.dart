@@ -82,13 +82,13 @@ class ListaView extends StatelessWidget {
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.auto_graph_outlined),
               label: 'Search',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.camera),
-              label: 'Camera',
+              icon: Icon(Icons.eco_outlined),
+              label: 'Cultura',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
           ]),
