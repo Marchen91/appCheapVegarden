@@ -1,11 +1,22 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
+import 'package:tarefas_app/views/android/bottow.view.dart';
 
-class TempHumid extends StatelessWidget {
+class TempHumid extends StatefulWidget {
+  @override
+  _TempHumidState createState() => _TempHumidState();
+}
+
+class _TempHumidState extends State<TempHumid> {
   int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,126 +32,281 @@ class TempHumid extends StatelessWidget {
         ),
         backgroundColor: Color.fromRGBO(142, 215, 206, 10),
       ),
-      body: Column(children: [
-        //Padding(padding: ),
-        SizedBox(height: 30),
-        Text(
-          "Informações",
-          style: TextStyle(
-              color: Colors.blueGrey,
-              fontSize: 35,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Homegarden'),
-        ),
-        SizedBox(height: 30),
-        Flexible(
-            child: Container(
-          color: Colors.white,
-        )),
-        Flexible(
-          flex: 2,
-          child: Consumer<TarefaService>(
-            builder: (context, service, child) {
-              var lista = service.tarefas;
-
-              return Column(
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "ESTUFA",
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'OpenSans'),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                            // borderRadius:
-                            //   BorderRadius.all(Radius.circular(8.0)),
-                            border: Border.lerp(
-                          Border(
-                              right: BorderSide(
-                                  color: Color.fromRGBO(142, 215, 206, 10),
-                                  width: 2,
-                                  style: BorderStyle.solid)),
-                          Border(
-                              right: BorderSide(
-                                  color: Color.fromRGBO(142, 215, 206, 10),
-                                  width: 1,
-                                  style: BorderStyle.none)),
-                          0,
-                        )),
-                        //Border.all(
-                        //  color: Color.fromRGBO(50, 151, 399, 50),
-                        // width: 1.3)),
-                        //color: Color.fromRGBO(142, 215, 206, 10),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          //crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/sun.svg',
-                                  height: 120,
-                                ),
-                                Text("${lista[1].temperatura.toString()}° C  ",
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'OpenSans',
-                                    )),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        /* decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)),
-                           border: Border.all(
-                               color: Color.fromRGBO(50, 151, 399, 50),
-                                width: 1.3)),*/
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          //crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/water.svg',
-                                  height: 120,
-                                ),
-                                Text("${lista[1].humidade.toString()} %  ",
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'OpenSans',
-                                    )),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
+      body: Container(
+        child: Column(children: [
+          //Padding(padding: ),
+          SizedBox(height: 30),
+          /* Text(
+            "Informações",
+            style: TextStyle(
+                color: Colors.blueGrey,
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Homegarden'),
           ),
-        )
-      ]),
+          SizedBox(height: 30),*/
+          /* Flexible(
+            child: Container(
+              // height: 1000,
+              //  width: 24,
+              color: Colors.white,
+            ),
+          ),*/
+          Flexible(
+            //flex: 2,
+            child: Consumer<TarefaService>(
+              builder: (context, service, child) {
+                var lista = service.tarefas;
+
+                return Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: new BoxDecoration(
+                          //color: Colors.white,
+
+                          // borderRadius:
+                          //   BorderRadius.all(Radius.circular(8.0)),
+
+                          borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(40.0),
+                        topRight: const Radius.circular(40.0),
+                      )),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "  UMIDADE DA CULTURA  ",
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'OpenSans'),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("  ${lista[3].humidade.toString()}° C  ",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'OpenSans',
+                                    )),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white12,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12.0)),
+                                        border: Border.all(
+                                            color: Color.fromRGBO(
+                                                50, 151, 399, 50),
+                                            width: 1.9)),
+                                    height: 200,
+                                    //  width: 24,
+                                    //color: Colors.white,
+                                    child: FAProgressBar(
+                                      animatedDuration:
+                                          Duration(milliseconds: 900),
+                                      direction: Axis.vertical,
+                                      backgroundColor: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(11.0)),
+                                      size: 40,
+                                      verticalDirection: VerticalDirection.up,
+                                      border: null,
+                                      progressColor: Colors.blue.shade300,
+                                      currentValue: lista[0].humidade.toInt(),
+                                      //displayText: '%',
+                                      displayTextStyle: TextStyle(
+                                          //color: Colors.black54,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'OpenSans'),
+                                    )),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: (MediaQuery.of(context).size.height - 519),
+                      decoration: new BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.shade200,
+                              blurRadius:
+                                  5.0, // has the effect of softening the shadow
+                              spreadRadius:
+                                  5.0, // has the effect of extending the shadow
+                              offset: Offset(
+                                3.0, // horizontal, move right 10
+                                30.0, // vertical, move down 10
+                              ),
+                            )
+                          ],
+                          /* gradient: new LinearGradient(
+                              colors: [
+                                Colors.green.shade100,
+                                Colors.red.shade100
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              tileMode: TileMode.clamp),*/
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(40.0),
+                            topRight: const Radius.circular(40.0),
+                          )),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 25,
+                          ),
+                          Text(
+                            "ESTUFA",
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'OpenSans'),
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.yellow.shade50,
+                                        blurRadius:
+                                            40.0, // has the effect of softening the shadow
+                                        spreadRadius:
+                                            1.0, // has the effect of extending the shadow
+                                        offset: Offset(
+                                          7.0, // horizontal, move right 10
+                                          10.0, // vertical, move down 10
+                                        ),
+                                      )
+                                    ],
+                                    // borderRadius:
+                                    //   BorderRadius.all(Radius.circular(8.0)),
+                                    border: Border.lerp(
+                                      Border(
+                                          right: BorderSide(
+                                              color: Color.fromRGBO(
+                                                  142, 215, 206, 10),
+                                              width: 2,
+                                              style: BorderStyle.solid)),
+                                      Border(
+                                          right: BorderSide(
+                                              color: Color.fromRGBO(
+                                                  142, 215, 206, 10),
+                                              width: 1,
+                                              style: BorderStyle.none)),
+                                      0,
+                                    )),
+                                //Border.all(
+                                //  color: Color.fromRGBO(50, 151, 399, 50),
+                                // width: 1.3)),
+                                //color: Color.fromRGBO(142, 215, 206, 10),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  //crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/sun.svg',
+                                          height: 120,
+                                        ),
+                                        Text(
+                                            "${lista[0].temperatura.toString()}° C  ",
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'OpenSans',
+                                            )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.blue.shade50,
+                                      blurRadius:
+                                          40.0, // has the effect of softening the shadow
+                                      spreadRadius:
+                                          1.0, // has the effect of extending the shadow
+                                      offset: Offset(
+                                        7.0, // horizontal, move right 10
+                                        10.0, // vertical, move down 10
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                /* decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                             border: Border.all(
+                                 color: Color.fromRGBO(50, 151, 399, 50),
+                                  width: 1.3)),*/
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  //crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/water.svg',
+                                          height: 120,
+                                        ),
+                                        Text(
+                                            "${lista[0].humidade.toString()} %  ",
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'OpenSans',
+                                            )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          )
+        ]),
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Color.fromRGBO(23, 151, 179, 1),
@@ -148,129 +314,79 @@ class TempHumid extends StatelessWidget {
           Navigator.of(context).pushNamed('/create');
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CurvedNavigationBar(
+        index: _currentIndex,
+        color: Color.fromRGBO(142, 215, 206, 10),
+        backgroundColor: Colors.white,
+        items: <Widget>[
+          Icon(Icons.thermostat),
+          Icon(Icons.auto_graph),
+          Icon(Icons.eco),
+        ],
+        onTap: ((index) {
+          print(index);
+          if (index == 0) {
+            Navigator.of(context).pushNamed('/');
+          }
+          if (index == 1) {
+            Navigator.of(context).pushNamed('/list');
+          } else if (index == 2) {
+            Navigator.of(context).pushNamed('/create');
+          }
+        }),
+      ),
+
+      /*CurvedNavigationBar(
+        color: Color.fromRGBO(142, 215, 206, 10),
+        backgroundColor: Colors.white,
+        items: <Widget>[
+          Icon(Icons.thermostat),
+          Icon(Icons.auto_graph),
+          Icon(Icons.eco),
+        ],
+        onTap: ((index) {
+          print(index);
+          if (index == 1) {
+            Navigator.of(context).pushNamed('/list');
+          } else if (index == 2) {
+            Navigator.of(context).pushNamed('/create');
+          }
+        }),
+      ),*/
+
+      /*
+      BottomNavigationBar(
         currentIndex: _currentIndex,
+        selectedItemColor: Colors.white,
+        //type: BottomNavigationBarType.shifting,
         backgroundColor: Color.fromRGBO(142, 215, 206, 10),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.home,
-              color: Colors.white,
-            ),
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.thermostat),
+            label: 'Informações',
             backgroundColor: Color.fromRGBO(142, 215, 206, 10),
           ),
           BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.home,
-              color: Colors.white,
-            ),
-            icon: Icon(Icons.search),
-            label: 'Search',
+            icon: Icon(Icons.auto_graph),
+            label: 'Gráficos',
             backgroundColor: Color.fromRGBO(142, 215, 206, 10),
           ),
           BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.home,
-              color: Colors.white,
-            ),
-            icon: Icon(Icons.camera),
-            label: 'Camera',
+            icon: Icon(Icons.eco),
+            label: 'Culturas',
             backgroundColor: Color.fromRGBO(142, 215, 206, 10),
           ),
         ],
-        /* onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },*/
-      ),
+        onTap: ((index) {
+          print(index);
+          if (index == 1) {
+            Navigator.of(context).pushNamed('/list');
+          } else if (index == 2) {
+            Navigator.of(context).pushNamed('/create');
+          }
+        }),
+      ), */
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     );
   }
 }
-
-/*
-
-class TarefaItem extends StatelessWidget {
-  const TarefaItem(
-    this.tarefa,
-    this.service,
-  );
-
-  final Tarefa tarefa;
-  final TarefaService service;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(tarefa.id!),
-      background: Container(
-        color: Colors.green,
-      ),
-      onDismissed: (_) {
-        service.delete(tarefa);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("${tarefa.texto} foi removido com sucesso."),
-          ),
-        );
-      },
-      child: Column(
-        children: [
-          SizedBox(height: 5),
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                border: Border.all(
-                    color: Color.fromRGBO(50, 151, 399, 50), width: 0.2)),
-            child: ListTile(
-              //value: tarefa.finalizada,
-              title: Text(
-                tarefa.texto,
-                style: (TextStyle(
-                  color: Colors.green.shade800,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w100,
-                  fontFamily: 'GrowingGarden',
-                )),
-              ),
-              subtitle: Text("Mínimo: ${tarefa.min} %. \n"
-                  "Máximo: ${tarefa.max} %. \n"),
-              trailing: Container(
-                width: 100,
-                child: Row(
-                  children: <Widget>[
-                    //Text("Mínimo: ${tarefa.min} %"),
-                    //Text("Máximo: ${tarefa.max} %"),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed('/edit', arguments: tarefa);
-                      },
-                      icon: Icon(Icons.edit_outlined),
-                      color: Colors.blue.shade800,
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              //onChanged: (value) {
-              //  service.update(tarefa.id!, value!);
-              // },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-*/

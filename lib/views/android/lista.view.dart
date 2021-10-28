@@ -1,9 +1,12 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
+import 'package:tarefas_app/views/android/bottow.view.dart';
 
 class ListaView extends StatelessWidget {
+  int _currentIndex = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,50 +22,53 @@ class ListaView extends StatelessWidget {
         ),
         backgroundColor: Color.fromRGBO(142, 215, 206, 10),
       ),
-      body: Column(children: [
-        //Padding(padding: ),
-        SizedBox(height: 30),
-        Text(
-          "Culturas",
-          style: TextStyle(
-              color: Colors.blueGrey,
-              fontSize: 35,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Homegarden'),
-        ),
-        SizedBox(height: 30),
-        Flexible(
-          child: Consumer<TarefaService>(
-            builder: (context, service, child) {
-              var lista = service.tarefas;
-              if (lista.isEmpty) {
-                return Center(
-                    child: Text(
-                  "Nenhuma cultura cadastrada",
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic),
-                ));
-              }
-
-              return ListView.builder(
-                itemCount: lista.length,
-                itemBuilder: (_, index) {
-                  Tarefa tarefa = lista[index];
-                  return TarefaItem(tarefa, service);
-                },
-              );
-            },
+      body: Container(
+        color: Colors.white,
+        child: Column(children: [
+          //Padding(padding: ),
+          SizedBox(height: 30),
+          Text(
+            "Culturas",
+            style: TextStyle(
+                color: Colors.blueGrey,
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Homegarden'),
           ),
-        ),
-        Flexible(
-            flex: 2,
-            child: Container(
-              color: Colors.white,
-            )),
-      ]),
+          SizedBox(height: 30),
+          Flexible(
+            child: Consumer<TarefaService>(
+              builder: (context, service, child) {
+                var lista = service.tarefas;
+                if (lista.isEmpty) {
+                  return Center(
+                      child: Text(
+                    "Nenhuma cultura cadastrada",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic),
+                  ));
+                }
+
+                return ListView.builder(
+                  itemCount: lista.length,
+                  itemBuilder: (_, index) {
+                    Tarefa tarefa = lista[index];
+                    return TarefaItem(tarefa, service);
+                  },
+                );
+              },
+            ),
+          ),
+          /* Flexible(
+              flex: 2,
+              child: Container(
+                color: Colors.white,
+              )),*/
+        ]),
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Color.fromRGBO(23, 151, 179, 1),
@@ -70,28 +76,59 @@ class ListaView extends StatelessWidget {
           Navigator.of(context).pushNamed('/create');
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
-          currentIndex: 0,
+      bottomNavigationBar: CurvedNavigationBar(
+        index: _currentIndex,
+        color: Color.fromRGBO(142, 215, 206, 10),
+        backgroundColor: Colors.white,
+        items: <Widget>[
+          Icon(Icons.thermostat),
+          Icon(Icons.auto_graph),
+          Icon(Icons.eco),
+        ],
+        onTap: ((index) {
+          print(index);
+          if (index == 0) {
+            Navigator.of(context).pushNamed('/');
+          }
+          if (index == 1) {
+            Navigator.of(context).pushNamed('/list');
+          } else if (index == 2) {
+            Navigator.of(context).pushNamed('/create');
+          }
+        }),
+      ),
+
+      /* BottomNavigationBar(
+          //type: BottomNavigationBarType.shifting,
+          currentIndex: _currentIndex,
           selectedItemColor: Colors.white,
           backgroundColor: Color.fromRGBO(142, 215, 206, 10),
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.thermostat),
               label: 'Home',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
+<<<<<<< HEAD
               icon: Icon(Icons.auto_graph_outlined),
+=======
+              icon: Icon(Icons.auto_graph),
+>>>>>>> 238d3baecb992a6185f192d1e0854a39dd636dd6
               label: 'Search',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
+<<<<<<< HEAD
               icon: Icon(Icons.eco_outlined),
               label: 'Cultura',
+=======
+              icon: Icon(Icons.eco),
+              label: 'Camera',
+>>>>>>> 238d3baecb992a6185f192d1e0854a39dd636dd6
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
-          ]),
+          ]),*/
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
     );
   }
