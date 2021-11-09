@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tarefas_app/entities/culturaModel.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
 import 'package:flutter/services.dart';
@@ -18,11 +19,13 @@ class EditView extends StatelessWidget {
   String? descricao;
   String? minimo;
   String? maximo;
+  String? uid;
 
   var n;
   var n2;
 
   int _currentIndex = 2;
+  DocumentReference? ref;
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 //final Map<Tarefa, Tarefa> _formData = {};
 
@@ -35,25 +38,24 @@ class EditView extends StatelessWidget {
 
 
   }*/
-  Future _edit(BuildContext context) async {
+  Future _edit(BuildContext context, String? id) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      this.uid = id;
+      print(uid);
 
       try {
         firestore
             .collection('users')
             .doc(auth.currentUser?.uid)
             .collection('cultura')
-            .add({
+            .doc(uid)
+            .update({
+          //'uid': ref!.id,
           'cultura': descricao,
           'valor minimo': minimo,
           'valor maximo': maximo
         });
-        /*firestore.collection('users').doc(auth.currentUser?.uid).collection('cultura').doc('cultura'.).set({
-          'cultura': descricao,
-          'valor minimo': minimo,
-          'valor maximo': maximo
-        });*/
 
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (_) => ListaView()), (route) => false);
@@ -65,9 +67,10 @@ class EditView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tarefaArg = ModalRoute.of(context)!.settings.arguments as Tarefa;
-    String tarefaArgMin = tarefaArg.min.toString();
-    String tarefaArgMax = tarefaArg.max.toString();
+    final culturaArg =
+        ModalRoute.of(context)!.settings.arguments as CulturaModel;
+    String culturaArgMin = culturaArg.min.toString();
+    String culturaArgMax = culturaArg.max.toString();
 
     return Scaffold(
       appBar: AppBar(
@@ -83,28 +86,8 @@ class EditView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState?.save();
-                tarefaArg.texto = descricao!;
-                tarefaArg.min = n;
-                tarefaArg.max = n2;
-
-                //tarefa = Tarefa(texto: descricao!, min: n, max: n2);
-                var service =
-                    Provider.of<TarefaService>(context, listen: false);
-                service.update(tarefaArg.id!, tarefaArg.finalizada);
-
-                /*service.update(tarefaArg.id!, tarefaArg.texto,
-                    tarefaArg.finalizada, tarefaArg.min, tarefaArg.max);*/
-                //service.create(tarefa);
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content:
-                        Text("${tarefaArg.texto} foi editada com sucesso."),
-                  ),
-                );
-              }
+              uid = culturaArg.uid;
+              _edit(context, uid);
             },
             child: Text(
               "SALVAR",
@@ -134,7 +117,7 @@ class EditView extends StatelessWidget {
                 ),
                 SizedBox(height: 35),
                 TextFormField(
-                  initialValue: tarefaArg.texto,
+                  initialValue: culturaArg.cultura,
                   decoration: InputDecoration(
                       labelText: "Cultura",
                       border: OutlineInputBorder(),
@@ -150,7 +133,7 @@ class EditView extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  initialValue: tarefaArgMin,
+                  initialValue: culturaArgMin,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       labelText: "Umidade Mínima ",
@@ -188,7 +171,7 @@ class EditView extends StatelessWidget {
                 SizedBox(height: 10),
                 TextFormField(
                   //enabled: false,
-                  initialValue: tarefaArgMax,
+                  initialValue: culturaArgMax,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       labelText: "Umidade Máxima ",
@@ -202,7 +185,7 @@ class EditView extends StatelessWidget {
                     }
                     n2 = num.tryParse(valormax);
                     if (n == null) {
-                      n = tarefaArg.min;
+                      n = culturaArg.min;
 
                       return "${Validation(n, n2)}";
                     } else if (Validation(n, n2) == null) {

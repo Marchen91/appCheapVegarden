@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CulturaModel {
-  //String? uid;
+  String? uid;
   String? cultura;
   String? min;
   String? max;
@@ -11,7 +11,7 @@ class CulturaModel {
   bool? finalizada;
 
   CulturaModel({
-    // this.uid,
+    this.uid,
     this.cultura,
     //this.finalizada,
     this.min,
@@ -22,7 +22,7 @@ class CulturaModel {
   });
 
   CulturaModel.fromMap(Map<String, dynamic> map) {
-    //this.uid = map['uid'];
+    this.uid = map['uid'];
     this.cultura = map['cultura'];
     //this.finalizada = map['finalizada'];
     this.min = map['valor minimo'];
@@ -30,7 +30,7 @@ class CulturaModel {
   }
   Map<String, dynamic> toMap() {
     return {
-      // "uid": this.uid,
+      "uid": this.uid,
       "cultura": this.cultura,
       //"finalizada": this.finalizada,
       "valor minimo": this.min,

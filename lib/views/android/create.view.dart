@@ -20,6 +20,8 @@ class CreateView extends StatelessWidget {
   var n;
   var n2;
   int _currentIndex = 2;
+  DocumentReference? ref;
+
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   Future _register(BuildContext context) async {
@@ -27,15 +29,31 @@ class CreateView extends StatelessWidget {
       _formKey.currentState!.save();
 
       try {
-        firestore
+        ref = await firestore
             .collection('users')
             .doc(auth.currentUser?.uid)
             .collection('cultura')
             .add({
+          //'uid': ref!.id,
           'cultura': descricao,
           'valor minimo': minimo,
           'valor maximo': maximo
+        }).then((value) {
+          firestore
+              .collection('users')
+              .doc(auth.currentUser?.uid)
+              .collection('cultura')
+              .doc(value.id)
+              .set({
+            'uid': value.id,
+            'cultura': descricao,
+            'valor minimo': minimo,
+            'valor maximo': maximo
+          });
+
+          print(value.id);
         });
+
         /*firestore.collection('users').doc(auth.currentUser?.uid).collection('cultura').doc('cultura'.).set({
           'cultura': descricao,
           'valor minimo': minimo,

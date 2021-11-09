@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -199,6 +201,7 @@ class ListaView extends StatelessWidget {
 
 class Cultura extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final CulturaModel model;
 
   Cultura(this.model);
@@ -211,7 +214,15 @@ class Cultura extends StatelessWidget {
         color: Colors.green,
       ),
       onDismissed: (_) {
-        //service.delete(tarefa);
+        var id = model.uid;
+        print(id);
+
+        firestore
+            .collection('users')
+            .doc(auth.currentUser?.uid)
+            .collection('cultura')
+            .doc(id)
+            .delete();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
