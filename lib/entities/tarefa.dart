@@ -3,7 +3,8 @@ class Tarefa {
   String texto;
   int min;
   int max;
-  double humidade;
+  double umidade;
+  double umidadeSolo;
   double temperatura;
   bool finalizada;
 
@@ -13,7 +14,8 @@ class Tarefa {
       this.finalizada = false,
       this.min = 0,
       this.max = 0,
-      this.humidade = 0.0,
+      this.umidade = 0.0,
+      this.umidadeSolo = 0.0,
       this.temperatura = 0.0});
 
   factory Tarefa.fromJson(Map<String, dynamic> json) {
@@ -23,7 +25,8 @@ class Tarefa {
       min: json['min'],
       max: json['max'],
       temperatura: json['temperatura'],
-      humidade: json['humidade'],
+      umidade: json['umidade'],
+      umidadeSolo: json['umidadeSolo'],
       finalizada: json['finalizada'],
     );
   }
@@ -35,7 +38,8 @@ class Tarefa {
       "min": min,
       "max": max,
       "temperatura": temperatura,
-      "humidade": humidade,
+      "umidade": umidade,
+      "umidadeSolo": umidadeSolo,
       "finalizada": finalizada
     };
   }

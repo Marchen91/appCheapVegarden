@@ -5,8 +5,13 @@ import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
 import 'package:flutter/services.dart';
 import 'package:tarefas_app/views/android/bottow.view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tarefas_app/views/android/lista.view.dart';
 
 class CreateView extends StatelessWidget {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   // atributos da classe:
   var _formKey = GlobalKey<FormState>();
   String? descricao;
@@ -15,6 +20,36 @@ class CreateView extends StatelessWidget {
   var n;
   var n2;
   int _currentIndex = 2;
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  Future _register(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      try {
+        firestore
+            .collection('users')
+            .doc(auth.currentUser?.uid)
+            .collection('cultura')
+            .add({
+          'cultura': descricao,
+          'valor minimo': minimo,
+          'valor maximo': maximo
+        });
+        /*firestore.collection('users').doc(auth.currentUser?.uid).collection('cultura').doc('cultura'.).set({
+          'cultura': descricao,
+          'valor minimo': minimo,
+          'valor maximo': maximo
+        });*/
+
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => ListaView()), (route) => false);
+      } on FirebaseAuthException catch (ex) {
+        print(ex.message);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +66,9 @@ class CreateView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              _register(context);
+
+              /* if (_formKey.currentState!.validate()) {
                 _formKey.currentState?.save();
                 var tarefa = Tarefa(texto: descricao!, min: n, max: n2);
                 var service =
@@ -45,7 +82,7 @@ class CreateView extends StatelessWidget {
                         Text("${tarefa.texto} foi adicionado com sucesso."),
                   ),
                 );
-              }
+              }*/
             },
             child: Text(
               "SALVAR",

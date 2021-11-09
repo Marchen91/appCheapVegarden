@@ -1,59 +1,45 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
 import 'package:flutter/services.dart';
 import 'package:tarefas_app/views/android/bottow.view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tarefas_app/views/android/lista.view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class EditView extends StatelessWidget {
+class RegisterView extends StatefulWidget {
+  // atributos da classe:
+  @override
+  _RegisterViewState createState() => _RegisterViewState();
+}
+
+class _RegisterViewState extends State<RegisterView> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // atributos da classe:
   var _formKey = GlobalKey<FormState>();
+  String? nome, email, senha, apelido, fone;
+  PhoneAuthCredential? telefone;
 
-  String? descricao;
-  String? minimo;
-  String? maximo;
-
-  var n;
-  var n2;
-
-  int _currentIndex = 2;
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-//final Map<Tarefa, Tarefa> _formData = {};
-
-  /*void _loadFormData(Tarefa tarefa){
-    _formData['id']= tarefa.id!;
-    _formData['descricao']= tarefa.texto;
-    _formData['minimo']= tarefa.min as String;
-    _formData['maximo']= tarefa.max as String;
-       
-
-
-  }*/
-  Future _edit(BuildContext context) async {
+  Future _register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
       try {
+        /* n = num.tryParse(valor!);
+
+        telefone = PhoneAuthCredential.Parse(fone!);*/
+        await auth.createUserWithEmailAndPassword(
+            email: email!, password: senha!);
+
+        await auth.currentUser?.updateDisplayName(nome);
+
+        //await auth.currentUser?.updatePhoneNumber(telefone!);
         firestore
             .collection('users')
             .doc(auth.currentUser?.uid)
-            .collection('cultura')
-            .add({
-          'cultura': descricao,
-          'valor minimo': minimo,
-          'valor maximo': maximo
-        });
-        /*firestore.collection('users').doc(auth.currentUser?.uid).collection('cultura').doc('cultura'.).set({
-          'cultura': descricao,
-          'valor minimo': minimo,
-          'valor maximo': maximo
-        });*/
+            .set({'apelido': apelido, 'data': DateTime.now()});
 
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (_) => ListaView()), (route) => false);
@@ -63,12 +49,10 @@ class EditView extends StatelessWidget {
     }
   }
 
+  int _currentIndex = 2;
+
   @override
   Widget build(BuildContext context) {
-    final tarefaArg = ModalRoute.of(context)!.settings.arguments as Tarefa;
-    String tarefaArgMin = tarefaArg.min.toString();
-    String tarefaArgMax = tarefaArg.max.toString();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -83,28 +67,7 @@ class EditView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState?.save();
-                tarefaArg.texto = descricao!;
-                tarefaArg.min = n;
-                tarefaArg.max = n2;
-
-                //tarefa = Tarefa(texto: descricao!, min: n, max: n2);
-                var service =
-                    Provider.of<TarefaService>(context, listen: false);
-                service.update(tarefaArg.id!, tarefaArg.finalizada);
-
-                /*service.update(tarefaArg.id!, tarefaArg.texto,
-                    tarefaArg.finalizada, tarefaArg.min, tarefaArg.max);*/
-                //service.create(tarefa);
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content:
-                        Text("${tarefaArg.texto} foi editada com sucesso."),
-                  ),
-                );
-              }
+              _register(context);
             },
             child: Text(
               "SALVAR",
@@ -125,7 +88,7 @@ class EditView extends StatelessWidget {
               children: [
                 SizedBox(height: 20),
                 Text(
-                  "Editar Cultura",
+                  "Registro",
                   style: TextStyle(
                       color: Colors.blueGrey,
                       fontSize: 35,
@@ -134,15 +97,15 @@ class EditView extends StatelessWidget {
                 ),
                 SizedBox(height: 35),
                 TextFormField(
-                  initialValue: tarefaArg.texto,
+                  maxLines: null,
                   decoration: InputDecoration(
-                      labelText: "Cultura",
+                      labelText: "Nome",
                       border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.agriculture_outlined)),
-                  onSaved: (value) => this.descricao = value,
+                      prefixIcon: Icon(Icons.person)),
+                  onSaved: (value) => nome = value,
                   validator: (value) {
                     if (value!.length < 3) {
-                      return "Campo obrigatório";
+                      return "Mínimo de 3 caracteres.";
                     }
                     return null;
                   },
@@ -150,75 +113,67 @@ class EditView extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  initialValue: tarefaArgMin,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      labelText: "Umidade Mínima ",
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.water_damage),
-                      suffix: Text('%')),
-                  onSaved: (valor) => this.minimo = valor,
+                    labelText: "E-mail",
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.alternate_email),
+                    //suffix: Text('%')
+                  ),
+                  onSaved: (valor) => email = valor,
                   validator: (valor) {
-                    //var valorMin;
-                    /*if (n == null) {
-                      valorMin = "0";
-                      n = 0;
-                    }*/
-                    n = num.tryParse(valor!);
-                    if (valor.length == 0) {
-                      return "Campo obrigatório";
+                    if (valor!.isEmpty) {
+                      return "Campo obrigatório.";
                     }
-                    if (num.tryParse(valor)! > 100) {
-                      return "Umidade máxima de 100%.";
-                    }
-                    if (num.tryParse(valor)! < 0) {
-                      return "Umidade mínima de 0%.";
-                    }
-                    /*   if (n < 0) {
-                      return "Valor não pode ser negativo.";
-                    }
-                    if (n > 100) {
-                      return "Valor não pode ser maior que 100 %.";
-                    }
-*/
+
                     return null;
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  //enabled: false,
-                  initialValue: tarefaArgMax,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      labelText: "Umidade Máxima ",
+                    labelText: "Senha",
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.lock),
+                    //suffix: Text('%')
+                  ),
+                  obscureText: true,
+                  onSaved: (valorsenha) => senha = valorsenha,
+                  validator: (valorsenha) {
+                    if (valorsenha!.length < 6) {
+                      return "Mínimo 6 dígitos";
+                    }
+
+                    return null;
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                ),
+                SizedBox(height: 10),
+                /*TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      labelText: "Apelido",
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.water_damage_outlined),
                       suffix: Text('%')),
-                  onSaved: (valormax) => this.maximo = valormax,
-                  validator: (valormax) {
-                    if (valormax!.length == 0) {
-                      return "Campo obrigatório";
+                  onSaved: (valorapelido) => apelido = valorapelido,
+                  validator: (valorapelido) {
+                    if (valorapelido!.length < 6) {
+                      return "Mínimo 6 dígitos";
                     }
-                    n2 = num.tryParse(valormax);
-                    if (n == null) {
-                      n = tarefaArg.min;
 
-                      return "${Validation(n, n2)}";
-                    } else if (Validation(n, n2) == null) {
-                      return null;
-                    } else {
-                      return "${Validation(n, n2)}";
-                    }
+                    return null;
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                )
+                ),*/
               ],
             ),
           ),
         ),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
+      /*bottomNavigationBar: CurvedNavigationBar(
         index: _currentIndex,
         color: Color.fromRGBO(142, 215, 206, 10),
         backgroundColor: Colors.white,
@@ -238,7 +193,7 @@ class EditView extends StatelessWidget {
             Navigator.of(context).pushNamed('/create');
           }
         }),
-      ),
+      ),*/
 
       /*  BottomNavigationBar(
           currentIndex: _currentIndex,
@@ -262,14 +217,5 @@ class EditView extends StatelessWidget {
             ),
           ]),*/
     );
-  }
-}
-
-String? Validation(int number, int number2) {
-  if (number2 > 100) {
-    return "Umidáde máxima de 100%.";
-  }
-  if (number2 <= number) {
-    return "Umidade mínima: ${number}%.";
   }
 }

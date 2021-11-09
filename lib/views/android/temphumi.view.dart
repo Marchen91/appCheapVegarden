@@ -92,7 +92,14 @@ class _TempHumidState extends State<TempHumid> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("  ${lista[3].humidade.toString()}° C  ",
+                                /*Text("  lista ° C  ",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'OpenSans',
+                                    )),*/
+                                Text(
+                                    "  ${lista[3].umidadeSolo.toString()}° C  ",
                                     style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
@@ -124,8 +131,9 @@ class _TempHumidState extends State<TempHumid> {
                                       verticalDirection: VerticalDirection.up,
                                       border: null,
                                       progressColor: Colors.blue.shade300,
-                                      currentValue: lista[0].humidade.toInt(),
-                                      //displayText: '%',
+                                      currentValue:
+                                          lista[3].umidadeSolo.toInt(),
+                                      displayText: '%',
                                       displayTextStyle: TextStyle(
                                           //color: Colors.black54,
                                           fontSize: 15,
@@ -139,13 +147,33 @@ class _TempHumidState extends State<TempHumid> {
                             ),
                           ),
                           SizedBox(
-                            height: 30,
+                            height: 10,
+                          ),
+                          (lista[0].finalizada == false)
+                              ? Text(" Solenóide Ligada ",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'OpenSans',
+                                  ))
+                              : Text(" Solenóide Desligada ",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'OpenSans',
+                                  )),
+                          SizedBox(
+                            height: 20,
                           ),
                         ],
                       ),
                     ),
                     Container(
-                      height: (MediaQuery.of(context).size.height - 519),
+                      height: (MediaQuery.of(context).size.height - 546),
                       decoration: new BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -284,7 +312,7 @@ class _TempHumidState extends State<TempHumid> {
                                           height: 120,
                                         ),
                                         Text(
-                                            "${lista[0].humidade.toString()} %  ",
+                                            "${lista[0].umidade.toString()} %  ",
                                             style: TextStyle(
                                               fontSize: 25,
                                               fontWeight: FontWeight.bold,

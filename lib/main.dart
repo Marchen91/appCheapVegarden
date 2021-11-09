@@ -3,8 +3,11 @@ import 'dart:io';
 
 import 'package:tarefas_app/views/android/android.app.dart';
 import 'package:tarefas_app/views/ios/ios.app.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   // runApp(Platform.isIOS ? IosApp() : AndroidApp());
   runApp(AndroidApp());
 }

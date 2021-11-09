@@ -6,8 +6,12 @@ import 'package:tarefas_app/views/android/lista.view.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/views/android/login.view.dart';
 import 'package:tarefas_app/views/android/temphumi.view.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AndroidApp extends StatelessWidget {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -22,7 +26,7 @@ class AndroidApp extends StatelessWidget {
           '/list': (context) => ListaView(),
           '/login': (context) => Login(),
         },
-        initialRoute: '/',
+        initialRoute: '/login',
       ),
     );
   }
