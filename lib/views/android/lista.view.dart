@@ -1,12 +1,50 @@
+import 'dart:html';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
 import 'package:tarefas_app/views/android/bottow.view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tarefas_app/views/android/login.view.dart';
+import 'package:tarefas_app/entities/culturaModel.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListaView extends StatelessWidget {
   int _currentIndex = 1;
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Future _logout(BuildContext context) async {
+    await auth.signOut();
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => Login()), (route) => false);
+  }
+
+  Future _read(BuildContext context) async {
+    var collection = FirebaseFirestore.instance.collection('user');
+
+    try {
+      var result = await collection.get();
+      for (var doc in result.docs) {
+        print(doc['nome']);
+      }
+
+      /*firestore.collection('users').doc(auth.currentUser?.uid).collection('cultura').doc('cultura'.).set({
+          'cultura': descricao,
+          'valor minimo': minimo,
+          'valor maximo': maximo
+        });*/
+
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => ListaView()), (route) => false);
+    } on FirebaseAuthException catch (ex) {
+      print(ex.message);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +58,12 @@ class ListaView extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => _logout(context),
+            child: Text("SAIR", style: TextStyle(color: Colors.white)),
+          ),
+        ],
         backgroundColor: Color.fromRGBO(142, 215, 206, 10),
       ),
       body: Container(
@@ -37,6 +81,35 @@ class ListaView extends StatelessWidget {
           ),
           SizedBox(height: 30),
           Flexible(
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: firestore
+                    .collection('users')
+                    .doc(auth.currentUser?.uid)
+                    .collection('cultura')
+                    .snapshots(),
+                builder: (_, snapshot) {
+                  if (!snapshot.hasData)
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+
+                  return ListView.builder(
+                    itemCount: snapshot.data?.docs.length,
+                    itemBuilder: (_, index) {
+                      return Cultura(CulturaModel.fromMap(
+                        snapshot.data!.docs[index].data(),
+                      ));
+                    },
+                    //reverse: true,
+                  );
+                }),
+          ),
+
+          /*Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
+            return ListView.builder(itemBuilder: data.length,)*/
+
+          /* Flexible(
             child: Consumer<TarefaService>(
               builder: (context, service, child) {
                 var lista = service.tarefas;
@@ -61,7 +134,8 @@ class ListaView extends StatelessWidget {
                 );
               },
             ),
-          ),
+          ),*/
+
           /* Flexible(
               flex: 2,
               child: Container(
@@ -134,6 +208,100 @@ class ListaView extends StatelessWidget {
   }
 }
 
+class Cultura extends StatelessWidget {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final CulturaModel model;
+
+  Cultura(this.model);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      key: Key(model.cultura!),
+      background: Container(
+        color: Colors.green,
+      ),
+      onDismissed: (_) {
+        var id = model.uid;
+        print(id);
+
+        firestore
+            .collection('users')
+            .doc(auth.currentUser?.uid)
+            .collection('cultura')
+            .doc(id)
+            .delete();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("${model.cultura} foi removido com sucesso."),
+          ),
+        );
+      },
+      child: Column(
+        children: [
+          SizedBox(height: 5),
+          Container(
+            margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                border: Border.all(
+                    color: Color.fromRGBO(50, 151, 399, 50), width: 0.2)),
+            child: ListTile(
+              //value: tarefa.finalizada,
+              title: Text(
+                model.cultura!,
+                style: (TextStyle(
+                  color: Colors.green.shade800,
+                  fontSize: 35,
+                  fontWeight: FontWeight.w100,
+                  fontFamily: 'GrowingGarden',
+                )),
+              ),
+              subtitle: Text("Mínimo: ${model.min} %. \n"
+                  "Máximo: ${model.max} %. \n"),
+              trailing: Container(
+                width: 100,
+                child: Row(
+                  children: <Widget>[
+                    //Text("Mínimo: ${tarefa.min} %"),
+                    //Text("Máximo: ${tarefa.max} %"),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed('/edit', arguments: model);
+                      },
+                      icon: Icon(Icons.edit_outlined),
+                      color: Colors.blue.shade800,
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              //onChanged: (value) {
+              //  service.update(tarefa.id!, value!);
+              // },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+/*
 class TarefaItem extends StatelessWidget {
   const TarefaItem(
     this.tarefa,
@@ -163,6 +331,7 @@ class TarefaItem extends StatelessWidget {
         children: [
           SizedBox(height: 5),
           Container(
+            margin: const EdgeInsets.only(left: 10.0, right: 10.0),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 border: Border.all(
@@ -213,4 +382,4 @@ class TarefaItem extends StatelessWidget {
       ),
     );
   }
-}
+}*/
