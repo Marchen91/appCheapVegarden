@@ -221,7 +221,7 @@ class CreateView extends StatelessWidget {
           if (index == 1) {
             Navigator.of(context).pushNamed('/list');
           } else if (index == 2) {
-            Navigator.of(context).pushNamed('/create');
+            Navigator.of(context).pushNamed('/irrigation');
           }
         }),
       ),

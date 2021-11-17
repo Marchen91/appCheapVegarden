@@ -17,6 +17,7 @@ class ListaView extends StatelessWidget {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   Future _logout(BuildContext context) async {
     await auth.signOut();
     Navigator.of(context).pushAndRemoveUntil(

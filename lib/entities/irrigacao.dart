@@ -1,8 +1,8 @@
 class Irrigacao {
   DateTime? data;
-  double fluxo;
-  double volume;
-  bool solenoide;
+  double? fluxo;
+  double? volume;
+  bool? solenoide;
 
   Irrigacao({
     this.data,
@@ -10,6 +10,12 @@ class Irrigacao {
     this.volume = 0.0,
     this.solenoide = false,
   });
+
+  Irrigacao.fromMap(Map<String, dynamic> map) {
+    this.data = map['data'];
+    this.fluxo = map['fluxo'];
+    this.volume = map['volume'];
+  }
 
   factory Irrigacao.fromJson(Map<String, dynamic> json) {
     return Irrigacao(
