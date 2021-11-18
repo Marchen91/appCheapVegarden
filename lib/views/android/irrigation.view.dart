@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:tarefas_app/entities/irrigacao.dart';
 
 class Irrigation extends StatefulWidget {
   @override
@@ -8,6 +10,8 @@ class Irrigation extends StatefulWidget {
 }
 
 class _IrrigationState extends State<Irrigation> {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   int _currentIndex = 1;
 
   @override
@@ -30,16 +34,27 @@ class _IrrigationState extends State<Irrigation> {
         child: Column(
           children: [
             Flexible(
-              child: Column(
-                children: [
-                  Container(
-                    child: graficoFluxo(),
-                  ),
-                  Container(
-                    child: tabelaVolumeMensal(),
-                  ),
-                ],
-              ),
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: firestore.collection('irrigacao').snapshots(),
+                  builder: (_, snapshot) {
+                    if (!snapshot.hasData)
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+
+                    return ListView.builder(
+                      itemCount: snapshot.data?.docs.length,
+                      itemBuilder: (_, index) {
+                        var i = Irrigacao.fromMap(
+                            snapshot.data!.docs[index].data());
+                        return tabelaVolumeMensal(i);
+                      },
+                      //reverse: true,
+                    );
+                  }),
+            ),
+            Container(
+              child: graficoFluxo(),
             ),
           ],
         ),
@@ -97,7 +112,7 @@ graficoFluxo() {
   );
 }
 
-tabelaVolumeMensal() {
+tabelaVolumeMensal(Irrigacao i) {
   return Container(
     width: double.infinity,
     decoration: new BoxDecoration(
@@ -138,14 +153,14 @@ tabelaVolumeMensal() {
               ),
             ),
           ],
-          rows: const <DataRow>[
+          rows: <DataRow>[
             DataRow(
               cells: <DataCell>[
                 DataCell(
                   Text('Janeiro'),
                 ),
                 DataCell(
-                  Text('20.3'),
+                  Text(i.volume.toString()),
                 ),
               ],
             ),

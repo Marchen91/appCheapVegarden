@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Irrigacao {
-  DateTime? data;
+  Timestamp? data;
   double? fluxo;
   double? volume;
   bool? solenoide;
