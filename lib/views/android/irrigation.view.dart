@@ -33,6 +33,18 @@ class _IrrigationState extends State<Irrigation> {
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
+            Text(
+              "VOLUME MENSAL",
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Flexible(
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: firestore.collection('irrigacao').snapshots(),
@@ -42,14 +54,39 @@ class _IrrigationState extends State<Irrigation> {
                         child: CircularProgressIndicator(),
                       );
 
-                    return ListView.builder(
-                      itemCount: snapshot.data?.docs.length,
-                      itemBuilder: (_, index) {
-                        var i = Irrigacao.fromMap(
-                            snapshot.data!.docs[index].data());
-                        return tabelaVolumeMensal(i);
-                      },
-                      //reverse: true,
+                    return DataTable(
+                      columns: const <DataColumn>[
+                        DataColumn(
+                          label: Text(
+                            'MÊS',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'VOLUME',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                      rows: snapshot.data!.docs
+                          .map((e) => DataRow(
+                                cells: <DataCell>[
+                                  DataCell(
+                                    Text(e
+                                        .data()["data"]
+                                        .toDate()
+                                        .month
+                                        .toString()),
+                                  ),
+                                  DataCell(
+                                    Text(e.data()["volume"].toString()),
+                                  ),
+                                ],
+                              ))
+                          .toList(),
                     );
                   }),
             ),
@@ -111,128 +148,3 @@ graficoFluxo() {
     ),
   );
 }
-
-tabelaVolumeMensal(Irrigacao i) {
-  return Container(
-    width: double.infinity,
-    decoration: new BoxDecoration(
-      borderRadius: BorderRadius.only(
-        topLeft: const Radius.circular(40.0),
-        topRight: const Radius.circular(40.0),
-      ),
-    ),
-    child: Column(
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        Text(
-          "VOLUME MENSAL",
-          style: TextStyle(
-            color: Colors.black54,
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        DataTable(
-          columns: const <DataColumn>[
-            DataColumn(
-              label: Text(
-                'MÊS',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'VOLUME',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-          rows: <DataRow>[
-            DataRow(
-              cells: <DataCell>[
-                DataCell(
-                  Text('Janeiro'),
-                ),
-                DataCell(
-                  Text(i.volume.toString()),
-                ),
-              ],
-            ),
-            DataRow(
-              cells: <DataCell>[
-                DataCell(
-                  Text('Fevereiro'),
-                ),
-                DataCell(
-                  Text('14.3'),
-                ),
-              ],
-            ),
-          ],
-        ),
-        // ),
-        // Table(
-        //   defaultColumnWidth: FixedColumnWidth(150.0),
-        //   border: TableBorder(
-        //     top: BorderSide(
-        //       color: Colors.black,
-        //       style: BorderStyle.solid,
-        //       width: 2,
-        //     ),
-        //     bottom: BorderSide(
-        //       color: Colors.black,
-        //       style: BorderStyle.solid,
-        //       width: 2,
-        //     ),
-        //     left: BorderSide(
-        //       color: Colors.black,
-        //       style: BorderStyle.solid,
-        //       width: 2,
-        //     ),
-        //     right: BorderSide(
-        //       color: Colors.black,
-        //       style: BorderStyle.solid,
-        //       width: 2,
-        //     ),
-        //     horizontalInside: BorderSide(
-        //       color: Colors.black,
-        //       style: BorderStyle.solid,
-        //       width: 2,
-        //     ),
-        //     verticalInside: BorderSide(
-        //       color: Colors.black,
-        //       style: BorderStyle.solid,
-        //       width: 2,
-        //     ),
-        //   ),
-        //   children: [
-        //     _linhaTable("MÊS, VOLUME"),
-        //     _linhaTable("JAN, 40.2"),
-        //     _linhaTable("FEV, 32.1"),
-        //     _linhaTable("ABR, 21.2"),
-        //   ],
-      ],
-    ),
-  );
-}
-
-// _linhaTable(String listaDados) {
-//   return TableRow(
-//     children: listaDados.split(',').map((dados) {
-//       return Container(
-//         alignment: Alignment.center,
-//         child: Text(
-//           dados,
-//           style: TextStyle(fontSize: 18),
-//         ),
-//         padding: EdgeInsets.all(2),
-//       );
-//     }).toList(),
-//   );
-// }

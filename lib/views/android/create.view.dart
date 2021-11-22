@@ -15,8 +15,8 @@ class CreateView extends StatelessWidget {
   // atributos da classe:
   var _formKey = GlobalKey<FormState>();
   String? descricao;
-  String? minimo;
-  String? maximo;
+  int? minimo;
+  int? maximo;
   var n;
   var n2;
   int _currentIndex = 2;
@@ -36,8 +36,8 @@ class CreateView extends StatelessWidget {
             .add({
           //'uid': ref!.id,
           'cultura': descricao,
-          'valor minimo': minimo,
-          'valor maximo': maximo
+          'valorminimo': minimo,
+          'valormaximo': maximo
         }).then((value) {
           firestore
               .collection('users')
@@ -47,8 +47,8 @@ class CreateView extends StatelessWidget {
               .set({
             'uid': value.id,
             'cultura': descricao,
-            'valor minimo': minimo,
-            'valor maximo': maximo
+            'valorminimo': minimo,
+            'valormaximo': maximo
           });
 
           print(value.id);
@@ -152,7 +152,7 @@ class CreateView extends StatelessWidget {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.water_damage),
                       suffix: Text('%')),
-                  onSaved: (valor) => this.minimo = valor,
+                  onSaved: (valor) => this.minimo = int.parse(valor!),
                   validator: (valor) {
                     n = num.tryParse(valor!);
                     if (valor.length == 0) {
@@ -177,7 +177,7 @@ class CreateView extends StatelessWidget {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.water_damage_outlined),
                       suffix: Text('%')),
-                  onSaved: (valormax) => this.maximo = valormax,
+                  onSaved: (valormax) => this.maximo = int.parse(valormax!),
                   validator: (valormax) {
                     n2 = num.tryParse(valormax!);
 
