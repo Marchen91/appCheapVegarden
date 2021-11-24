@@ -1,5 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
@@ -44,7 +46,11 @@ class _RegisterViewState extends State<RegisterView> {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (_) => ListaView()), (route) => false);
       } on FirebaseAuthException catch (ex) {
-        print(ex.message);
+        Fluttertoast.showToast(
+            msg: ex.message!,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 3,
+            fontSize: 24);
       }
     }
   }
@@ -124,6 +130,12 @@ class _RegisterViewState extends State<RegisterView> {
                   validator: (valor) {
                     if (valor!.isEmpty) {
                       return "Campo obrigatório.";
+                    }
+                    if (!valor.contains("@")) {
+                      return "Tipo inválido.";
+                    }
+                    if (!valor.contains(".")) {
+                      return "Tipo inválido.";
                     }
 
                     return null;

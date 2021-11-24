@@ -2,6 +2,7 @@ import 'dart:html';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
@@ -17,6 +18,7 @@ class ListaView extends StatelessWidget {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   Future _logout(BuildContext context) async {
     await auth.signOut();
     Navigator.of(context).pushAndRemoveUntil(
@@ -92,6 +94,17 @@ class ListaView extends StatelessWidget {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
+
+                  if (snapshot.data?.docs.length == 0)
+                    return (Center(
+                        child: Text(
+                      "Nenhuma cultura cadastrada",
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic),
+                    )));
 
                   return ListView.builder(
                     itemCount: snapshot.data?.docs.length,
@@ -184,13 +197,22 @@ class ListaView extends StatelessWidget {
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
+<<<<<<< HEAD
+              icon: Icon(Icons.auto_graph_outlined),
+=======
               icon: Icon(Icons.auto_graph),
+>>>>>>> 238d3baecb992a6185f192d1e0854a39dd636dd6
               label: 'Search',
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
             BottomNavigationBarItem(
+<<<<<<< HEAD
+              icon: Icon(Icons.eco_outlined),
+              label: 'Cultura',
+=======
               icon: Icon(Icons.eco),
               label: 'Camera',
+>>>>>>> 238d3baecb992a6185f192d1e0854a39dd636dd6
               backgroundColor: Color.fromRGBO(142, 215, 206, 10),
             ),
           ]),*/
@@ -205,6 +227,31 @@ class Cultura extends StatelessWidget {
   final CulturaModel model;
 
   Cultura(this.model);
+  String? uid;
+  int? minimo;
+  int? maximo;
+
+  DocumentReference? ref;
+
+  CollectionReference valores = FirebaseFirestore.instance.collection('values');
+
+  Future _refresh(BuildContext context, int? min, int? max, String? id) async {
+    this.uid = id;
+    this.maximo = max;
+    this.minimo = min;
+
+    try {
+      firestore.collection('values').doc('valuesId').update({
+        'uid': id,
+        'max': maximo,
+        'min': minimo,
+      });
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => ListaView()), (route) => false);
+    } on FirebaseAuthException catch (ex) {
+      print(ex.message);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -236,6 +283,8 @@ class Cultura extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(left: 10.0, right: 10.0),
             decoration: BoxDecoration(
+                color:
+                    (model.uid == uid) ? Colors.green.shade300 : Colors.yellow,
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 border: Border.all(
                     color: Color.fromRGBO(50, 151, 399, 50), width: 0.2)),
@@ -267,7 +316,19 @@ class Cultura extends StatelessWidget {
                       color: Colors.blue.shade800,
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        uid = model.uid;
+                        int? min1 = model.min;
+                        int? max1 = model.max;
+
+                        _refresh(context, min1, max1, uid);
+
+                        Fluttertoast.showToast(
+                            msg: "${model.cultura} foi editado com sucesso.",
+                            gravity: ToastGravity.TOP,
+                            timeInSecForIosWeb: 3,
+                            fontSize: 24);
+                      },
                       icon: Icon(
                         Icons.check_circle,
                         color: Colors.green,
@@ -286,91 +347,3 @@ class Cultura extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-/*
-class TarefaItem extends StatelessWidget {
-  const TarefaItem(
-    this.tarefa,
-    this.service,
-  );
-
-  final Tarefa tarefa;
-  final TarefaService service;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(tarefa.id!),
-      background: Container(
-        color: Colors.green,
-      ),
-      onDismissed: (_) {
-        service.delete(tarefa);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("${tarefa.texto} foi removido com sucesso."),
-          ),
-        );
-      },
-      child: Column(
-        children: [
-          SizedBox(height: 5),
-          Container(
-            margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                border: Border.all(
-                    color: Color.fromRGBO(50, 151, 399, 50), width: 0.2)),
-            child: ListTile(
-              //value: tarefa.finalizada,
-              title: Text(
-                tarefa.texto,
-                style: (TextStyle(
-                  color: Colors.green.shade800,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w100,
-                  fontFamily: 'GrowingGarden',
-                )),
-              ),
-              subtitle: Text("Mínimo: ${tarefa.min} %. \n"
-                  "Máximo: ${tarefa.max} %. \n"),
-              trailing: Container(
-                width: 100,
-                child: Row(
-                  children: <Widget>[
-                    //Text("Mínimo: ${tarefa.min} %"),
-                    //Text("Máximo: ${tarefa.max} %"),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed('/edit', arguments: tarefa);
-                      },
-                      icon: Icon(Icons.edit_outlined),
-                      color: Colors.blue.shade800,
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              //onChanged: (value) {
-              //  service.update(tarefa.id!, value!);
-              // },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}*/

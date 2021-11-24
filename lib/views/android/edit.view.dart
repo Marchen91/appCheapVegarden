@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/culturaModel.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
@@ -17,8 +18,8 @@ class EditView extends StatelessWidget {
   var _formKey = GlobalKey<FormState>();
 
   String? descricao;
-  String? minimo;
-  String? maximo;
+  int? minimo;
+  int? maximo;
   String? uid;
 
   var n;
@@ -53,8 +54,8 @@ class EditView extends StatelessWidget {
             .update({
           //'uid': ref!.id,
           'cultura': descricao,
-          'valor minimo': minimo,
-          'valor maximo': maximo
+          'valorminimo': minimo,
+          'valormaximo': maximo
         });
 
         Navigator.of(context).pushAndRemoveUntil(
@@ -88,6 +89,11 @@ class EditView extends StatelessWidget {
             onPressed: () {
               uid = culturaArg.uid;
               _edit(context, uid);
+              Fluttertoast.showToast(
+                  msg: "${this.descricao} foi editado com sucesso.",
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 3,
+                  fontSize: 24);
             },
             child: Text(
               "SALVAR",
@@ -140,7 +146,7 @@ class EditView extends StatelessWidget {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.water_damage),
                       suffix: Text('%')),
-                  onSaved: (valor) => this.minimo = valor,
+                  onSaved: (valor) => this.minimo = int.parse(valor!),
                   validator: (valor) {
                     //var valorMin;
                     /*if (n == null) {
@@ -178,7 +184,7 @@ class EditView extends StatelessWidget {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.water_damage_outlined),
                       suffix: Text('%')),
-                  onSaved: (valormax) => this.maximo = valormax,
+                  onSaved: (valormax) => this.maximo = int.parse(valormax!),
                   validator: (valormax) {
                     if (valormax!.length == 0) {
                       return "Campo obrigatório";

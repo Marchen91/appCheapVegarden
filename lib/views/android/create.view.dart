@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
@@ -15,8 +16,8 @@ class CreateView extends StatelessWidget {
   // atributos da classe:
   var _formKey = GlobalKey<FormState>();
   String? descricao;
-  String? minimo;
-  String? maximo;
+  int? minimo;
+  int? maximo;
   var n;
   var n2;
   int _currentIndex = 2;
@@ -36,8 +37,8 @@ class CreateView extends StatelessWidget {
             .add({
           //'uid': ref!.id,
           'cultura': descricao,
-          'valor minimo': minimo,
-          'valor maximo': maximo
+          'valorminimo': minimo,
+          'valormaximo': maximo
         }).then((value) {
           firestore
               .collection('users')
@@ -47,8 +48,8 @@ class CreateView extends StatelessWidget {
               .set({
             'uid': value.id,
             'cultura': descricao,
-            'valor minimo': minimo,
-            'valor maximo': maximo
+            'valorminimo': minimo,
+            'valormaximo': maximo
           });
 
           print(value.id);
@@ -93,14 +94,19 @@ class CreateView extends StatelessWidget {
                     Provider.of<TarefaService>(context, listen: false);
 
                 service.create(tarefa);
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content:
-                        Text("${tarefa.texto} foi adicionado com sucesso."),
-                  ),
-                );
-              }*/
+                Navigator.of(context).pop();*/
+              Fluttertoast.showToast(
+                  msg: "${this.descricao} foi adicionado com sucesso.",
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 3,
+                  fontSize: 24);
+              /*ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content:
+                      Text("${this.descricao} foi adicionado com sucesso."),
+                ),
+              );*/
+              /* }*/
             },
             child: Text(
               "SALVAR",
@@ -152,7 +158,7 @@ class CreateView extends StatelessWidget {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.water_damage),
                       suffix: Text('%')),
-                  onSaved: (valor) => this.minimo = valor,
+                  onSaved: (valor) => this.minimo = int.parse(valor!),
                   validator: (valor) {
                     n = num.tryParse(valor!);
                     if (valor.length == 0) {
@@ -177,7 +183,7 @@ class CreateView extends StatelessWidget {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.water_damage_outlined),
                       suffix: Text('%')),
-                  onSaved: (valormax) => this.maximo = valormax,
+                  onSaved: (valormax) => this.maximo = int.parse(valormax!),
                   validator: (valormax) {
                     n2 = num.tryParse(valormax!);
 
@@ -221,7 +227,7 @@ class CreateView extends StatelessWidget {
           if (index == 1) {
             Navigator.of(context).pushNamed('/list');
           } else if (index == 2) {
-            Navigator.of(context).pushNamed('/create');
+            Navigator.of(context).pushNamed('/irrigation');
           }
         }),
       ),

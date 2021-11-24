@@ -38,10 +38,11 @@ class _TempHumidState extends State<TempHumid> {
         backgroundColor: Color.fromRGBO(142, 215, 206, 10),
       ),
       body: Container(
-          child: Column(children: [
-        //Padding(padding: ),
-        SizedBox(height: 30),
-        /* Text(
+        child: Column(
+          children: [
+            //Padding(padding: ),
+            SizedBox(height: 30),
+            /* Text(
             "Informações",
             style: TextStyle(
                 color: Colors.blueGrey,
@@ -50,18 +51,22 @@ class _TempHumidState extends State<TempHumid> {
                 fontFamily: 'Homegarden'),
           ),
           SizedBox(height: 30),*/
-        /* Flexible(
+            /* Flexible(
             child: Container(
               // height: 1000,
               //  width: 24,
               color: Colors.white,
             ),
           ),*/
-        Flexible(
-            //flex: 2,
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            Flexible(
+              //flex: 2,
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: firestore.collection('climambiente').snapshots(),
                 builder: (_, snapshot) {
+                  if (!snapshot.hasData)
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   model = EstufaModel.fromMap(
                     snapshot.data!.docs[0].data(),
                   );
@@ -88,10 +93,11 @@ class _TempHumidState extends State<TempHumid> {
                             Text(
                               "  UMIDADE DA CULTURA  ",
                               style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'OpenSans'),
+                                color: Colors.black54,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'OpenSans',
+                              ),
                             ),
                             SizedBox(
                               height: 20,
@@ -116,37 +122,37 @@ class _TempHumidState extends State<TempHumid> {
                                     height: 20,
                                   ),
                                   Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white12,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(12.0)),
-                                          border: Border.all(
-                                              color: Color.fromRGBO(
-                                                  50, 151, 399, 50),
-                                              width: 1.9)),
-                                      height: 200,
-                                      //  width: 24,
-                                      //color: Colors.white,
-                                      child: FAProgressBar(
-                                        animatedDuration:
-                                            Duration(milliseconds: 900),
-                                        direction: Axis.vertical,
-                                        backgroundColor: Colors.white,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white12,
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(11.0)),
-                                        size: 40,
-                                        verticalDirection: VerticalDirection.up,
-                                        border: null,
-                                        progressColor: Colors.blue.shade300,
-                                        currentValue:
-                                            model!.umidadeSolo!.toInt(),
-                                        displayText: '%',
-                                        displayTextStyle: TextStyle(
-                                            //color: Colors.black54,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'OpenSans'),
-                                      )),
+                                            Radius.circular(12.0)),
+                                        border: Border.all(
+                                            color: Color.fromRGBO(
+                                                50, 151, 399, 50),
+                                            width: 1.9)),
+                                    height: 200,
+                                    //  width: 24,
+                                    //color: Colors.white,
+                                    child: FAProgressBar(
+                                      animatedDuration:
+                                          Duration(milliseconds: 900),
+                                      direction: Axis.vertical,
+                                      backgroundColor: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(11.0)),
+                                      size: 40,
+                                      verticalDirection: VerticalDirection.up,
+                                      border: null,
+                                      progressColor: Colors.blue.shade300,
+                                      currentValue: model!.umidadeSolo!.toInt(),
+                                      displayText: '%',
+                                      displayTextStyle: TextStyle(
+                                          //color: Colors.black54,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'OpenSans'),
+                                    ),
+                                  ),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -337,15 +343,19 @@ class _TempHumidState extends State<TempHumid> {
                       ),
                     ],
                   );
-                }))
-      ])),
-      floatingActionButton: FloatingActionButton(
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      /*floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Color.fromRGBO(23, 151, 179, 1),
         onPressed: () {
           Navigator.of(context).pushNamed('/create');
         },
-      ),
+      ),*/
       bottomNavigationBar: CurvedNavigationBar(
         index: _currentIndex,
         color: Color.fromRGBO(142, 215, 206, 10),
@@ -361,9 +371,9 @@ class _TempHumidState extends State<TempHumid> {
             Navigator.of(context).pushNamed('/');
           }
           if (index == 1) {
-            Navigator.of(context).pushNamed('/list');
+            Navigator.of(context).pushNamed('/irrigation');
           } else if (index == 2) {
-            Navigator.of(context).pushNamed('/create');
+            Navigator.of(context).pushNamed('/login');
           }
         }),
       ),
