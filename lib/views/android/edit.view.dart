@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/culturaModel.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
@@ -88,6 +89,11 @@ class EditView extends StatelessWidget {
             onPressed: () {
               uid = culturaArg.uid;
               _edit(context, uid);
+              Fluttertoast.showToast(
+                  msg: "${this.descricao} foi editado com sucesso.",
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 3,
+                  fontSize: 24);
             },
             child: Text(
               "SALVAR",

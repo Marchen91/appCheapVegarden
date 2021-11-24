@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
@@ -29,7 +30,11 @@ class _LoginState extends State<Login> {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (_) => ListaView()), (route) => false);
       } on FirebaseAuthException catch (ex) {
-        print(ex.message);
+        Fluttertoast.showToast(
+            msg: ex.message!,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 3,
+            fontSize: 24);
       }
     }
   }
@@ -87,6 +92,20 @@ class _LoginState extends State<Login> {
                   fontFamily: 'OpenSans',
                 ),
                 onSaved: (value) => email = value,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Campo obrigatório.";
+                  }
+                  if (!value.contains("@")) {
+                    return "Tipo inválido.";
+                  }
+                  if (!value.contains(".")) {
+                    return "Tipo inválido.";
+                  }
+
+                  return null;
+                },
+                autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
               SizedBox(
                 height: 15,
@@ -108,11 +127,19 @@ class _LoginState extends State<Login> {
                 ),
                 obscureText: true,
                 onSaved: (value) => senha = value,
+                validator: (value) {
+                  if (value!.length < 6) {
+                    return "Mínimo 6 dígitos";
+                  }
+
+                  return null;
+                },
+                autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
               SizedBox(
                 height: 15,
               ),
-              Container(
+              /*Container(
                 height: 40,
                 //color: Colors.white,
                 alignment: Alignment.centerRight,
@@ -128,7 +155,7 @@ class _LoginState extends State<Login> {
                     textAlign: TextAlign.right,
                   ),
                 ),
-              ),
+              ),*/
               SizedBox(
                 height: 60,
               ),
@@ -145,10 +172,23 @@ class _LoginState extends State<Login> {
                       Color.fromRGBO(142, 215, 206, 10),
                     ],
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  borderRadius: BorderRadius.all(Radius.circular(80)),
                 ),
                 child: SizedBox.expand(
                   child: ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                      ),
+                      minimumSize: MaterialStateProperty.all(Size(20, 50)),
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.transparent),
+                      // elevation: MaterialStateProperty.all(3),
+                      shadowColor:
+                          MaterialStateProperty.all(Colors.transparent),
+                    ),
                     onPressed: () => _login(context),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -170,7 +210,7 @@ class _LoginState extends State<Login> {
               SizedBox(
                 height: 15,
               ),
-              Container(
+              /*Container(
                 height: 60,
                 alignment: Alignment.centerLeft,
                 decoration: BoxDecoration(
@@ -203,16 +243,52 @@ class _LoginState extends State<Login> {
                     onPressed: null,
                   ),
                 ),
-              ),
+              ),*/
               SizedBox(
                 height: 15,
               ),
               Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 4),
+                        blurRadius: 5.0)
+                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [0.0, 1.0],
+                    colors: [
+                      Colors.brown.shade300,
+                      Color.fromRGBO(142, 215, 206, 10),
+                    ],
+                  ),
+                  color: Colors.deepPurple.shade300,
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 height: 40,
                 child: ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                    minimumSize: MaterialStateProperty.all(Size(20, 50)),
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.transparent),
+                    // elevation: MaterialStateProperty.all(3),
+                    shadowColor: MaterialStateProperty.all(Colors.transparent),
+                  ),
                   child: Text(
                     "Cadastre-se",
                     textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans',
+                        color: Colors.black54),
                   ),
                   onPressed: () {
                     Navigator.of(context).push(

@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefas_app/entities/tarefa.dart';
 import 'package:tarefas_app/services/tarefa.service.dart';
@@ -93,14 +94,19 @@ class CreateView extends StatelessWidget {
                     Provider.of<TarefaService>(context, listen: false);
 
                 service.create(tarefa);
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content:
-                        Text("${tarefa.texto} foi adicionado com sucesso."),
-                  ),
-                );
-              }*/
+                Navigator.of(context).pop();*/
+              Fluttertoast.showToast(
+                  msg: "${this.descricao} foi adicionado com sucesso.",
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 3,
+                  fontSize: 24);
+              /*ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content:
+                      Text("${this.descricao} foi adicionado com sucesso."),
+                ),
+              );*/
+              /* }*/
             },
             child: Text(
               "SALVAR",
