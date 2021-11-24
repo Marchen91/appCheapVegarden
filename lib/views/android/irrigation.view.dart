@@ -2,11 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-<<<<<<< HEAD
 import 'package:tarefas_app/entities/irrigacaoModel.dart';
-=======
-import 'package:tarefas_app/entities/irrigacao.dart';
->>>>>>> b9b45f475f3dca936d055418898f212bc53545f7
 
 class Irrigation extends StatefulWidget {
   @override
@@ -17,7 +13,6 @@ class _IrrigationState extends State<Irrigation> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   int _currentIndex = 1;
-<<<<<<< HEAD
   int? _mes = 0;
   String? texto;
   List<String> meses = [
@@ -34,8 +29,6 @@ class _IrrigationState extends State<Irrigation> {
     "Novembro",
     "Dezembro"
   ];
-=======
->>>>>>> b9b45f475f3dca936d055418898f212bc53545f7
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +46,6 @@ class _IrrigationState extends State<Irrigation> {
         backgroundColor: Color.fromRGBO(142, 215, 206, 10),
       ),
       body: Container(
-<<<<<<< HEAD
-=======
-        color: Colors.white,
->>>>>>> b9b45f475f3dca936d055418898f212bc53545f7
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
@@ -81,7 +70,6 @@ class _IrrigationState extends State<Irrigation> {
                         child: CircularProgressIndicator(),
                       );
 
-<<<<<<< HEAD
                     // return ListView.builder(
                     //   itemCount: snapshot.data?.docs.length,
                     //   itemBuilder: (_, index) {
@@ -90,8 +78,6 @@ class _IrrigationState extends State<Irrigation> {
                     //     ));
                     //   },
                     // );
-=======
->>>>>>> b9b45f475f3dca936d055418898f212bc53545f7
                     return DataTable(
                       columns: const <DataColumn>[
                         DataColumn(
@@ -113,7 +99,6 @@ class _IrrigationState extends State<Irrigation> {
                           .map((e) => DataRow(
                                 cells: <DataCell>[
                                   DataCell(
-<<<<<<< HEAD
                                     // Text(e
                                     //     .data()["data"]
                                     //     .toDate()
@@ -125,13 +110,6 @@ class _IrrigationState extends State<Irrigation> {
                                               1]
                                           .toString(),
                                     ),
-=======
-                                    Text(e
-                                        .data()["data"]
-                                        .toDate()
-                                        .month
-                                        .toString()),
->>>>>>> b9b45f475f3dca936d055418898f212bc53545f7
                                   ),
                                   DataCell(
                                     Text(e.data()["volume"].toString()),
