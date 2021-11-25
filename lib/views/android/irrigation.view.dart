@@ -3,6 +3,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tarefas_app/entities/irrigacaoModel.dart';
+import "package:collection/collection.dart";
 
 class Irrigation extends StatefulWidget {
   @override
@@ -12,8 +13,10 @@ class Irrigation extends StatefulWidget {
 class _IrrigationState extends State<Irrigation> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  late IrrigacaoModel model;
+
   int _currentIndex = 1;
-  int? _mes = 0;
+  int index = 0;
   String? texto;
   List<String> meses = [
     "Janeiro",
@@ -62,22 +65,32 @@ class _IrrigationState extends State<Irrigation> {
               height: 20,
             ),
             Flexible(
-              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: firestore.collection('irrigacao').snapshots(),
+              child: StreamBuilder(
+                  stream: firestore
+                      .collection('irrigacao')
+                      .orderBy('data')
+                      .snapshots(),
                   builder: (_, snapshot) {
                     if (!snapshot.hasData)
                       return Center(
                         child: CircularProgressIndicator(),
                       );
 
-                    // return ListView.builder(
-                    //   itemCount: snapshot.data?.docs.length,
-                    //   itemBuilder: (_, index) {
-                    //     return Irrigacao(IrrigacaoModel.fromMap(
-                    //       snapshot.data!.docs[index].data(),
-                    //     ));
-                    //   },
-                    // );
+                    Map<String, double> dados = Map<String, double>();
+
+                    dynamic x = snapshot.data!;
+
+                    for (var doc in x.docs) {
+                      var mes = doc.data()['data'].toDate().month.toString();
+                      double volume = doc.data()["volume"];
+
+                      // completar a partir daqui
+
+                      if (dados.containsKey(mes))
+                        dados[mes] = dados[mes]! + volume;
+                      else
+                        dados[mes] = volume;
+                    }
                     return DataTable(
                       columns: const <DataColumn>[
                         DataColumn(
@@ -95,24 +108,20 @@ class _IrrigationState extends State<Irrigation> {
                           ),
                         ),
                       ],
-                      rows: snapshot.data!.docs
+                      rows: dados.keys
                           .map((e) => DataRow(
                                 cells: <DataCell>[
                                   DataCell(
-                                    // Text(e
-                                    //     .data()["data"]
-                                    //     .toDate()
-                                    //     .month
-                                    //     .toString()),
+                                    Text(e),
                                     // _mes = (e.data()["data"].toDate().month),
-                                    Text(
-                                      meses[(e.data()["data"].toDate().month) -
-                                              1]
-                                          .toString(),
-                                    ),
+                                    // Text(
+                                    //   meses[(e.data()["data"].toDate().month) -
+                                    //           1]
+                                    //       .toString(),
+                                    // ),
                                   ),
                                   DataCell(
-                                    Text(e.data()["volume"].toString()),
+                                    Text(dados[e].toString()),
                                   ),
                                 ],
                               ))
@@ -148,6 +157,12 @@ class _IrrigationState extends State<Irrigation> {
         }),
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<IrrigacaoModel>('model', model));
   }
 }
 
