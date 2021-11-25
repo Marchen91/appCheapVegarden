@@ -81,7 +81,7 @@ class _IrrigationState extends State<Irrigation> {
                     dynamic x = snapshot.data!;
 
                     for (var doc in x.docs) {
-                      var mes = doc.data()['data'].toDate().month.toString();
+                      var mes = meses[(doc.data()['data'].toDate().month) - 1];
                       double volume = doc.data()["volume"];
 
                       // completar a partir daqui
