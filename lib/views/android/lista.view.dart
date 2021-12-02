@@ -1,16 +1,9 @@
-import 'dart:html';
-
+import 'package:cheapvegarden_app/entities/culturaModel.dart';
+import 'package:cheapvegarden_app/views/android/login.view.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
-import 'package:tarefas_app/entities/tarefa.dart';
-import 'package:tarefas_app/services/tarefa.service.dart';
-import 'package:tarefas_app/views/android/bottow.view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tarefas_app/views/android/login.view.dart';
-import 'package:tarefas_app/entities/culturaModel.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListaView extends StatelessWidget {

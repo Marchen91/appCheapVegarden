@@ -1,12 +1,8 @@
+import 'package:cheapvegarden_app/views/android/lista.view.dart';
+import 'package:cheapvegarden_app/views/android/register.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
-import 'package:tarefas_app/entities/tarefa.dart';
-import 'package:tarefas_app/services/tarefa.service.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tarefas_app/views/android/lista.view.dart';
-import 'package:tarefas_app/views/android/register.dart';
 
 class Login extends StatefulWidget {
   @override

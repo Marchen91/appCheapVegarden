@@ -1,22 +1,13 @@
+import 'package:cheapvegarden_app/views/android/android.app.dart';
 import 'package:flutter/material.dart';
-// import 'dart:io';
-
-import 'package:tarefas_app/views/android/android.app.dart';
-// import 'package:tarefas_app/views/ios/ios.app.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-// <<<<<<< HEAD
-// void main() => runApp(AndroidApp());
-// =======
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // runApp(Platform.isIOS ? IosApp() : AndroidApp());
   runApp(AndroidApp());
 }
-
-
-// >>>>>>> dcd3423ffe2aeca1b5aff72fc6aa734dd49ce8c7
 
 /*
 Estados do Widget

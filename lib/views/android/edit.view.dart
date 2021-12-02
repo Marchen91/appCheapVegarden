@@ -1,14 +1,11 @@
+import 'package:cheapvegarden_app/entities/culturaModel.dart';
+import 'package:cheapvegarden_app/views/android/lista.view.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tarefas_app/entities/culturaModel.dart';
-import 'package:tarefas_app/entities/tarefa.dart';
-import 'package:tarefas_app/services/tarefa.service.dart';
 import 'package:flutter/services.dart';
-import 'package:tarefas_app/views/android/bottow.view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tarefas_app/views/android/lista.view.dart';
 
 class EditView extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;

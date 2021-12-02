@@ -1,23 +1,46 @@
+import 'package:cheapvegarden_app/entities/irrigacaoModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:tarefas_app/entities/irrigacaoModel.dart';
 import "package:collection/collection.dart";
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class Irrigation extends StatefulWidget {
-  @override
+  final Widget? child;
+
+  Irrigation({Key? key, this.child}) : super(key: key);
+
   _IrrigationState createState() => _IrrigationState();
 }
 
 class _IrrigationState extends State<Irrigation> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  late List<charts.Series<IrrigacaoModel, int>> _seriesDadosGrafico;
+  late List<IrrigacaoModel> meusDados;
+
+  _gerarDados(meusDados) {
+    _seriesDadosGrafico = <charts.Series<IrrigacaoModel, int>>[];
+    _seriesDadosGrafico.add(
+      charts.Series(
+        colorFn: (__, _) => charts.ColorUtil.fromDartColor(Color(0xffff9900)),
+        id: 'Fluxo',
+        data: meusDados,
+        domainFn: (IrrigacaoModel irrigacaoModel, _) =>
+            irrigacaoModel.data!.toDate().hour,
+        measureFn: (IrrigacaoModel irrigacaoModel, _) => irrigacaoModel.fluxo,
+      ),
+    );
+  }
+
   late IrrigacaoModel model;
 
   int _currentIndex = 1;
   int index = 0;
   String? texto;
+
   List<String> meses = [
     "Janeiro",
     "Fevereiro",
@@ -32,6 +55,68 @@ class _IrrigationState extends State<Irrigation> {
     "Novembro",
     "Dezembro"
   ];
+
+  Widget _lerDados(BuildContext context, firestore) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: firestore.collection('irrigacao').orderBy('data').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return LinearProgressIndicator();
+        } else {
+          List<IrrigacaoModel> irrigacaoModel = snapshot.data!.docs
+              .map((documentSnapshot) =>
+                  IrrigacaoModel.fromMap(documentSnapshot.data()))
+              .toList();
+          return _buildChart(context, irrigacaoModel);
+        }
+      },
+    );
+  }
+
+  Widget _buildChart(
+      BuildContext context, List<IrrigacaoModel> irrigacaoModel) {
+    meusDados = irrigacaoModel;
+    _gerarDados(meusDados);
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Container(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Text(
+                'FLUXO',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 20.0,
+                  width: 500,
+                  child: charts.LineChart(
+                    _seriesDadosGrafico,
+                    defaultRenderer: new charts.LineRendererConfig(
+                        includeArea: true, stacked: true),
+                    animate: true,
+                    animationDuration: Duration(seconds: 5),
+                    behaviors: [
+                      // new charts.ChartTitle('Fluxo',
+                      //     behaviorPosition: charts.BehaviorPosition.top,
+                      //     titleOutsideJustification:
+                      //         charts.OutsideJustification.middleDrawArea),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +134,7 @@ class _IrrigationState extends State<Irrigation> {
         backgroundColor: Color.fromRGBO(142, 215, 206, 10),
       ),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(2),
         child: Column(
           children: [
             Text(
@@ -65,7 +150,10 @@ class _IrrigationState extends State<Irrigation> {
               height: 20,
             ),
             Flexible(
-              child: StreamBuilder(
+              child: SizedBox(
+                // height: 20,
+                width: 200,
+                child: StreamBuilder(
                   stream: firestore
                       .collection('irrigacao')
                       .orderBy('data')
@@ -127,10 +215,13 @@ class _IrrigationState extends State<Irrigation> {
                               ))
                           .toList(),
                     );
-                  }),
+                  },
+                ),
+              ),
             ),
-            Container(
-              child: graficoFluxo(),
+            Flexible(
+              flex: 2,
+              child: _lerDados(context, firestore),
             ),
           ],
         ),
@@ -157,6 +248,8 @@ class _IrrigationState extends State<Irrigation> {
         }),
       ),
     );
+
+    // ignore: dead_code
   }
 
   @override
@@ -164,32 +257,4 @@ class _IrrigationState extends State<Irrigation> {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<IrrigacaoModel>('model', model));
   }
-}
-
-graficoFluxo() {
-  return Container(
-    width: double.infinity,
-    decoration: new BoxDecoration(
-      borderRadius: BorderRadius.only(
-        topLeft: const Radius.circular(40.0),
-        topRight: const Radius.circular(40.0),
-      ),
-    ),
-    child: Column(
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        Text(
-          "GRÁFICO TEMPO REAL",
-          style: TextStyle(
-            color: Colors.black54,
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-      ],
-    ),
-  );
 }

@@ -1,4 +1,4 @@
-import 'package:tarefas_app/entities/tarefa.dart';
+import 'package:cheapvegarden_app/entities/tarefa.dart';
 
 class TarefaMemoryRepository {
   // atributo

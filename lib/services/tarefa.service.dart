@@ -1,6 +1,6 @@
+import 'package:cheapvegarden_app/entities/tarefa.dart';
+import 'package:cheapvegarden_app/repositories/tarefa-api.repository.dart';
 import 'package:flutter/material.dart';
-import 'package:tarefas_app/entities/tarefa.dart';
-import 'package:tarefas_app/repositories/tarefa-api.repository.dart';
 import 'package:uuid/uuid.dart';
 
 // lógica do negócio ~ BLOC
