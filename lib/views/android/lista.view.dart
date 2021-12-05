@@ -277,7 +277,7 @@ class Cultura extends StatelessWidget {
             margin: const EdgeInsets.only(left: 10.0, right: 10.0),
             decoration: BoxDecoration(
                 color:
-                    (model.uid == uid) ? Colors.green.shade300 : Colors.yellow,
+                    (model.uid == uid) ? Colors.green.shade300 : Colors.white10,
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 border: Border.all(
                     color: Color.fromRGBO(50, 151, 399, 50), width: 0.2)),

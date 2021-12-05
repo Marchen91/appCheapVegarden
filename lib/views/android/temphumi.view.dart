@@ -58,6 +58,10 @@ class _TempHumidState extends State<TempHumid> {
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: firestore.collection('climambiente').snapshots(),
                 builder: (_, snapshot) {
+                  if (!snapshot.hasData)
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   model = EstufaModel.fromMap(
                     snapshot.data!.docs[0].data(),
                   );
@@ -339,13 +343,6 @@ class _TempHumidState extends State<TempHumid> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Color.fromRGBO(23, 151, 179, 1),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/create');
-        },
       ),
       bottomNavigationBar: CurvedNavigationBar(
         index: _currentIndex,
