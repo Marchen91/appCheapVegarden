@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cheapvegarden_app/entities/irrigacaoModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -39,6 +41,7 @@ class _IrrigationState extends State<Irrigation> {
   int _currentIndex = 1;
   int index = 0;
   String? texto;
+  bool fim = false;
 
   List<String> meses = [
     "Janeiro",
@@ -57,7 +60,6 @@ class _IrrigationState extends State<Irrigation> {
 
   Widget _lerDados(BuildContext context, firestore) {
     var tamanho;
-    int contador = 1;
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: firestore.collection('irrigacao2').orderBy('data').snapshots(),
       builder: (context, snapshot) {
@@ -70,11 +72,14 @@ class _IrrigationState extends State<Irrigation> {
               .toList();
 
           tamanho = irrigacaoModel.length;
-          if (tamanho == 60 && irrigacaoModel.isNotEmpty) {
-            // contador += 1;
+          if (tamanho == 60) {
             irrigacaoModel.clear();
+            fim = true;
           }
-          return _buildChart(context, irrigacaoModel);
+          if (tamanho == 0) fim = false;
+          if (!fim) return _buildChart(context, irrigacaoModel);
+          irrigacaoModel.clear();
+          return CircularProgressIndicator();
         }
       },
     );
@@ -116,6 +121,7 @@ class _IrrigationState extends State<Irrigation> {
                       // showAxisLine: true,
                       viewport: new charts.NumericExtents(0, 60),
                     ),
+                    // domainAxis: new charts.EndPointsTimeAxisSpec(),
                     behaviors: [
                       new charts.ChartTitle('Fluxo (L/min)',
                           behaviorPosition: charts.BehaviorPosition.start,
@@ -167,11 +173,12 @@ class _IrrigationState extends State<Irrigation> {
             ],
             color: Colors.white,
           ),
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(8.0),
           child: Column(
             children: [
               Text(
                 "VOLUME MENSAL",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black54,
                   fontSize: 25,
@@ -185,7 +192,7 @@ class _IrrigationState extends State<Irrigation> {
               Flexible(
                 child: SizedBox(
                   // height: 20,
-                  width: 200,
+                  width: 500,
                   child: StreamBuilder(
                     stream: firestore
                         .collection('irrigacao')
@@ -199,14 +206,12 @@ class _IrrigationState extends State<Irrigation> {
 
                       Map<String, double> dados = Map<String, double>();
 
-                      dynamic x = snapshot.data!;
+                      dynamic documento = snapshot.data!;
 
-                      for (var doc in x.docs) {
+                      for (var doc in documento.docs) {
                         var mes =
                             meses[(doc.data()['data'].toDate().month) - 1];
                         double volume = doc.data()["volume"];
-
-                        // completar a partir daqui
 
                         if (dados.containsKey(mes))
                           dados[mes] = dados[mes]! + volume;
@@ -219,15 +224,17 @@ class _IrrigationState extends State<Irrigation> {
                             DataColumn(
                               label: Text(
                                 'MÊS',
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.justify,
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             DataColumn(
                               label: Text(
                                 'VOLUME (L)',
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.justify,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -236,18 +243,28 @@ class _IrrigationState extends State<Irrigation> {
                             ),
                           ],
                           rows: dados.keys
-                              .map((e) => DataRow(
+                              .map((conteudo) => DataRow(
                                     cells: <DataCell>[
                                       DataCell(
                                         Text(
-                                          e,
+                                          conteudo,
                                           textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'OpenSans',
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                       DataCell(
                                         Text(
-                                          dados[e]!.toStringAsFixed(2),
+                                          "${dados[conteudo]!.toStringAsFixed(2)}",
                                           textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'OpenSans',
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ],

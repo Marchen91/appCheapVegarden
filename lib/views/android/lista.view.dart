@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListaView extends StatelessWidget {
-  int _currentIndex = 1;
+  int _currentIndex = 2;
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -171,9 +171,9 @@ class ListaView extends StatelessWidget {
             Navigator.of(context).pushNamed('/');
           }
           if (index == 1) {
-            Navigator.of(context).pushNamed('/list');
+            Navigator.of(context).pushNamed('/irrigation');
           } else if (index == 2) {
-            Navigator.of(context).pushNamed('/create');
+            Navigator.of(context).pushNamed('/list');
           }
         }),
       ),

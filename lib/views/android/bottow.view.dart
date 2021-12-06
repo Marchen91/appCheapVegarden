@@ -19,7 +19,7 @@ class BottomNavigator extends StatelessWidget {
           Navigator.of(context).pushNamed('/');
         }
         if (index == 1) {
-          Navigator.of(context).pushNamed('/list');
+          Navigator.of(context).pushNamed('/irrigation');
         } else if (index == 2) {
           Navigator.of(context).pushNamed('/create');
         }

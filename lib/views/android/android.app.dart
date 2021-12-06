@@ -3,6 +3,7 @@ import 'package:cheapvegarden_app/views/android/edit.view.dart';
 import 'package:cheapvegarden_app/views/android/irrigation.view.dart';
 import 'package:cheapvegarden_app/views/android/lista.view.dart';
 import 'package:cheapvegarden_app/views/android/login.view.dart';
+import 'package:cheapvegarden_app/views/android/splash.screen.dart';
 import 'package:cheapvegarden_app/views/android/temphumi.view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ class AndroidApp extends StatelessWidget {
       create: (context) => TarefaService(), // singleton.
       child: MaterialApp(
         title: "Cheapvegarden",
-        // home: ListaView(),
+        // home: Splash(),
         debugShowCheckedModeBanner: false,
         routes: {
           '/': (context) => TempHumid(),
@@ -29,8 +30,9 @@ class AndroidApp extends StatelessWidget {
           '/list': (context) => ListaView(),
           '/login': (context) => Login(),
           '/irrigation': (context) => Irrigation(),
+          '/splash': (context) => Splash(),
         },
-        initialRoute: '/',
+        initialRoute: '/splash',
       ),
     );
   }
